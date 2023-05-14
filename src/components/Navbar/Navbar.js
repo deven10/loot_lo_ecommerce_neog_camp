@@ -1,6 +1,6 @@
 // libraries
-import React, { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import React from "react";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 // components
+import { ContextToken } from "../../context/LoginTokenProvider";
 
 // styling
 import "./Navbar.css";
@@ -22,7 +23,8 @@ const Logo = () => {
 };
 
 const Nav = () => {
-  const [loginToken, setLoginToken] = useState(false);
+  const LoginToken = localStorage.getItem("LoginToken");
+  const navigate = useNavigate();
 
   const ThreeDots = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -34,9 +36,14 @@ const Nav = () => {
       setAnchorEl(null);
     };
 
+    const handleSignOut = () => {
+      localStorage.clear();
+      navigate("/");
+    };
+
     return (
       <>
-        <div>
+        <div className="three-dots">
           <IconButton
             className="more-options"
             aria-label="more"
@@ -68,7 +75,9 @@ const Nav = () => {
               </Link>
             </MenuItem>
             <MenuItem onClick={handleClose}>
-              <button className="logout-button">Logout</button>
+              <button className="logout-button" onClick={handleSignOut}>
+                Logout
+              </button>
             </MenuItem>
           </Menu>
         </div>
@@ -77,52 +86,49 @@ const Nav = () => {
   };
 
   return (
-    <>
-      <div className="nav-container">
-        <div className="nav-links">
-          <Tooltip id="Cart-tooltip" />
-          <NavLink
-            data-tooltip-id="Cart-tooltip"
-            data-tooltip-content="Shop"
-            data-tooltip-place="bottom"
-            className="navLink"
-            to="/cart"
-          >
-            <i className="fa-solid fa-cart-shopping"></i>
-          </NavLink>
+    <div className="nav-container">
+      <div className="nav-links">
+        {LoginToken ? (
+          ""
+        ) : (
+          <>
+            <Tooltip id="login-tooltip" />
+            <NavLink
+              data-tooltip-id="login-tooltip"
+              data-tooltip-content="Login"
+              data-tooltip-place="bottom"
+              className="navLink"
+              to="/login"
+            >
+              <span>Login</span>
+            </NavLink>
+          </>
+        )}
 
-          <Tooltip id="Wishlist-tooltip" />
-          <NavLink
-            data-tooltip-id="Wishlist-tooltip"
-            data-tooltip-content="Wishlist"
-            data-tooltip-place="bottom"
-            className="navLink"
-            to="/wishlist"
-          >
-            <i className="fa-regular fa-heart"></i>
-          </NavLink>
-        </div>
+        <Tooltip id="Cart-tooltip" />
+        <NavLink
+          data-tooltip-id="Cart-tooltip"
+          data-tooltip-content="Cart"
+          data-tooltip-place="bottom"
+          className="navLink"
+          to="/cart"
+        >
+          <i className="fa-solid fa-cart-shopping nav-icon"></i>
+        </NavLink>
 
-        <div>
-          {loginToken ? (
-            <ThreeDots />
-          ) : (
-            <>
-              <Tooltip id="Login-tooltip" />
-              <NavLink
-                data-tooltip-id="Login-tooltip"
-                data-tooltip-content="Login"
-                data-tooltip-place="bottom"
-                className="navLink"
-                to="/login"
-              >
-                <i className="fa-regular fa-user"></i>
-              </NavLink>
-            </>
-          )}
-        </div>
+        <Tooltip id="Wishlist-tooltip" />
+        <NavLink
+          data-tooltip-id="Wishlist-tooltip"
+          data-tooltip-content="Wishlist"
+          data-tooltip-place="bottom"
+          className="navLink"
+          to="/wishlist"
+        >
+          <i className="fa-regular fa-heart nav-icon"></i>
+        </NavLink>
+        {LoginToken ? <ThreeDots /> : ""}
       </div>
-    </>
+    </div>
   );
 };
 

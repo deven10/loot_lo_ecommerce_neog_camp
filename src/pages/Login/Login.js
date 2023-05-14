@@ -1,101 +1,84 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+// libraries
+import React, { useEffect, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-const theme = createTheme();
+// components
+
+// styling
+import "../../stylesheet/FormStyling.css";
 
 export const Login = () => {
+  const navigate = useNavigate();
+  const LoginToken = localStorage.getItem("LoginToken");
+
+  useEffect(() => {
+    if (LoginToken) {
+      navigate("/");
+    }
+  }, []);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    // if (data.get("email") && data.get("password")) {
+    //   localStorage.setItem("LoginToken", Date.now());
+    //   navigate("/");
+    // }
+
+    // console.log({
+    //   email: data.get("email"),
+    //   password: data.get("password"),
+    // });
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+    <div className="main-form-page">
+      <form className="form" onSubmit={handleSubmit}>
+        <h2>Login</h2>
+        <div className="form-group">
+          <label htmlFor="email" className="form-label">
+            Email address
+          </label>
+          <input
+            className="form-input"
+            type="email"
+            required
+            placeholder="Enter your Email address..."
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
+          <input
+            className="form-input"
+            type="password"
+            required
+            placeholder="Enter your Password..."
+          />
+        </div>
+        <div className="form-check">
+          <div className="checkbox-div">
+            <input type="checkbox" className="checkbox-input" id="rememberMe" />
+            <label htmlFor="rememberMe" className="form-label">
+              Remember me
+            </label>
+          </div>
+          <div>
+            <Link
+              to="/forgot-password"
+              className="form-label forgot-password-link"
             >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link to="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+              Forgot Password?
+            </Link>
+          </div>
+        </div>
+
+        <button className="form-button">Login</button>
+        <Link to="/register" className="form-toggle-link">
+          Create New Account?
+        </Link>
+      </form>
+    </div>
   );
 };
